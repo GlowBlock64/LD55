@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnfil801op5sv"]
+
+[ext_resource type="Script" path="res://scripts/vein_summon.gd" id="1_pof8b"]
+
+[node name="veinSummon" type="Node2D"]
+script = ExtResource("1_pof8b")

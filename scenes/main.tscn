@@ -1,0 +1,49 @@
+[gd_scene load_steps=7 format=3 uid="uid://cye2vfpc24xh3"]
+
+[ext_resource type="PackedScene" uid="uid://u6grnmanm26r" path="res://scenes/player.tscn" id="1_kv4ln"]
+[ext_resource type="PackedScene" uid="uid://b5y0m7sqtrwgx" path="res://scenes/wall.tscn" id="2_7q0bb"]
+[ext_resource type="PackedScene" uid="uid://dxgopo1xi8w2q" path="res://scenes/floor.tscn" id="2_iu05o"]
+[ext_resource type="PackedScene" uid="uid://chvpc258kv8ur" path="res://scenes/enemy.tscn" id="3_3mbul"]
+[ext_resource type="Shader" path="res://assets/shaders/fullscreen.gdshader" id="3_8seds"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3h0sg"]
+shader = ExtResource("3_8seds")
+shader_parameter/amount = Vector2(512, 288)
+
+[node name="main" type="Node2D"]
+
+[node name="canvasModulate" type="CanvasModulate" parent="."]
+color = Color(0, 0, 0, 1)
+
+[node name="floor" parent="." instance=ExtResource("2_iu05o")]
+
+[node name="wall" parent="." instance=ExtResource("2_7q0bb")]
+
+[node name="veins" type="Node2D" parent="."]
+
+[node name="enemies" type="Node2D" parent="."]
+
+[node name="enemy" parent="enemies" instance=ExtResource("3_3mbul")]
+position = Vector2(70, 50)
+
+[node name="player" parent="." instance=ExtResource("1_kv4ln")]
+position = Vector2(-43, 1)
+
+[node name="control" type="Control" parent="player"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -640.0
+offset_top = -360.0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="player/control"]
+material = SubResource("ShaderMaterial_3h0sg")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

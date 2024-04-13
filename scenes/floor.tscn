@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxgopo1xi8w2q"]
+
+[sub_resource type="TileSet" id="TileSet_bupkb"]
+tile_size = Vector2i(32, 32)
+
+[node name="floor" type="TileMap"]
+tile_set = SubResource("TileSet_bupkb")
+cell_quadrant_size = 32
+format = 2

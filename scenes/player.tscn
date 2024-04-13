@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=3 uid="uid://u6grnmanm26r"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_idh6i"]
+[ext_resource type="Texture2D" uid="uid://c7wjxujggmw05" path="res://assets/sprites/light_1.png" id="2_5jiex"]
+[ext_resource type="Texture2D" uid="uid://brubodtp2iwed" path="res://assets/sprites/player.png" id="2_hcgkd"]
+[ext_resource type="PackedScene" uid="uid://cnfil801op5sv" path="res://scenes/veinSummon.tscn" id="4_mpduh"]
+[ext_resource type="Script" path="res://scripts/summonHandler.gd" id="5_3xqpu"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k6ofm"]
+height = 24.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ke1r4"]
+radius = 5.09902
+
+[node name="player" type="CharacterBody2D"]
+script = ExtResource("1_idh6i")
+
+[node name="sprite" type="Sprite2D" parent="."]
+position = Vector2(6, -16.5)
+texture = ExtResource("2_hcgkd")
+
+[node name="pointLight" type="PointLight2D" parent="."]
+blend_mode = 2
+texture = ExtResource("2_5jiex")
+height = 200.0
+
+[node name="colShape" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_k6ofm")
+
+[node name="camera" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+
+[node name="veinSummon" parent="." instance=ExtResource("4_mpduh")]
+
+[node name="summonHandler" type="Area2D" parent="."]
+script = ExtResource("5_3xqpu")
+
+[node name="colShape" type="CollisionShape2D" parent="summonHandler"]
+shape = SubResource("CircleShape2D_ke1r4")
+
+[connection signal="vein_summon" from="summonHandler" to="veinSummon" method="_on_summon_handler_vein_summon"]

@@ -1,0 +1,97 @@
+[gd_scene load_steps=11 format=3 uid="uid://cdrlyqdhxcqu7"]
+
+[ext_resource type="Texture2D" uid="uid://b16usi1tpedm1" path="res://assets/sprites/vein_1.png" id="1_mis5a"]
+[ext_resource type="Shader" path="res://scenes/vein.gdshader" id="1_pcxg8"]
+[ext_resource type="Shader" path="res://assets/shaders/vein.gdshader" id="1_r6vvi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q7sj0"]
+shader = ExtResource("1_pcxg8")
+
+[sub_resource type="GDScript" id="GDScript_a54ce"]
+script/source = "extends Area2D
+
+@onready var line : Line2D = $line
+@onready var colShape : CollisionShape2D = $colShape
+var points : PackedVector2Array = []
+
+@onready var vein_sprites = [
+	preload(\"res://assets/sprites/vein_1.png\"),
+	preload(\"res://assets/sprites/vein_2.png\"),
+	preload(\"res://assets/sprites/vein_3.png\"),
+	preload(\"res://assets/sprites/vein_4.png\"),
+	preload(\"res://assets/sprites/vein_5.png\"),
+]
+
+func _ready():
+	line.texture = vein_sprites[0]
+	for p in points:
+		line.add_point(p)
+	
+	colShape.shape.a = line.points[0]
+	colShape.shape.b = line.points[-1]
+
+func _physics_process(_delta):
+	pass
+
+
+func _on_body_entered(body):
+	if body is CharacterBody2D:
+		body.speed_multiplier -= 0.2
+
+
+func _on_body_exited(body):
+	if body is CharacterBody2D:
+		body.speed_multiplier += 0.2
+
+
+func _on_lifetime_timeout():
+	queue_free()
+"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wulum"]
+noise_type = 3
+frequency = 0.035
+fractal_type = 2
+fractal_gain = 0.735
+domain_warp_enabled = true
+domain_warp_amplitude = 5.0
+domain_warp_frequency = 0.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_laavn"]
+noise = SubResource("FastNoiseLite_wulum")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_invjw"]
+shader = ExtResource("1_r6vvi")
+shader_parameter/amplitude = 3.0
+shader_parameter/frequency = 2.0
+shader_parameter/noise = SubResource("NoiseTexture2D_laavn")
+
+[sub_resource type="Curve" id="Curve_j2pxu"]
+_data = [Vector2(0, 0), 0.0, 3.03125, 0, 0, Vector2(0.494845, 1), 2.62395, -2.82182, 0, 0, Vector2(1, 0), -2.77143, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_ivlfa"]
+resource_local_to_scene = true
+custom_solver_bias = 1.0
+
+[node name="vein" type="Area2D"]
+material = SubResource("ShaderMaterial_q7sj0")
+script = SubResource("GDScript_a54ce")
+
+[node name="line" type="Line2D" parent="."]
+material = SubResource("ShaderMaterial_invjw")
+width = 30.0
+width_curve = SubResource("Curve_j2pxu")
+texture = ExtResource("1_mis5a")
+texture_mode = 1
+
+[node name="colShape" type="CollisionShape2D" parent="."]
+shape = SubResource("SegmentShape2D_ivlfa")
+
+[node name="lifetime" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="timeout" from="lifetime" to="." method="_on_lifetime_timeout"]
